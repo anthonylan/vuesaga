@@ -17,6 +17,8 @@
 import { ref } from 'vue'
 
 import { StripeElement, StripeCheckout } from './VeePlugin'
+
+// import { StripeElement } from 'vuefintegrate'
 const public_key =  import.meta.env.VITE_STRIPE_PUBLIC_KEY
 
 const btnTaps = ref(1)

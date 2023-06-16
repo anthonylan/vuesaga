@@ -1,6 +1,7 @@
 {
   "name": "vuefintegrate",
   "version": "0.7.0",
+  "author": "Anthony Charles",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
@@ -24,7 +25,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "vue": "^3.3.2"
+    "vue": "^3.3.2",
+    "vuefintegrate": "^0.7.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
