@@ -1,5 +1,12 @@
-# VueSaga
-Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code
+# VueSaga (zero dependecies)
+Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code. 
+
+[![npm version](https://img.shields.io/npm/v/vuesaga.svg?style=flat-square)](https://www.npmjs.org/package/vuesaga)
+
+[`github`](https://github.com/anthonylan/vuesaga)
+
+
+
 
 ## Table of Contents
 
