@@ -24,9 +24,9 @@ export default defineConfig({
 build:{
   cssCodeSplit: false,
   lib:{
-    entry: "./src/VeePlugin.ts",
+    entry: "./src/Saga.ts",
     formats: ["es", "cjs"],
-    name: "VueFintegrate",
+    name: "VueSaga",
     fileName: format => (format === "es" ? "index.js" : "index.cjs"),
   },
   rollupOptions:{

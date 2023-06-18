@@ -1,6 +1,6 @@
 {
-  "name": "vuefintegrate",
-  "version": "0.7.0",
+  "name": "vuesaga",
+  "version": "0.0.1",
   "author": "Anthony Charles",
   "type": "module",
   "exports": {
@@ -25,8 +25,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "vue": "^3.3.2",
-    "vuefintegrate": "^0.7.0"
+    "ant-design-vue": "^3.2.20",
+    "stripe": "^12.9.0",
+    "vue": "^3.3.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

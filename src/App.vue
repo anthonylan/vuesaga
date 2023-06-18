@@ -1,66 +1,62 @@
 <template>
-  <header>
-    <div class="container">
-      <h1>Card Setup / Paymemt</h1>
-      <StripeElement :pk="public_key" :tap="btnTaps" :options="options1" @verify="handleVer"  />
-      <button @click="btnTaps++">Submit</button>
-      <br> <br>
+    <div class="panel">
+      <div class="docker stripe-section">
 
-      <h1>Stripe Checkout</h1>
-      <StripeCheckout :pk="public_key" :options="options"  @verify="handleVer" />
+        <div class="docker-content">
+          <a href="#" class="button">Read doc</a>
+          <h1>Stripe integration with dynamic validation</h1>
+          <p>Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code</p>
+        </div>
+       
+        <div class="container">
+         <Test />
+      </div>
+    </div>
+
+ 
 
     </div>
-  </header>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-import { StripeElement, StripeCheckout } from './VeePlugin'
-
-// import { StripeElement } from 'vuefintegrate'
-const public_key =  import.meta.env.VITE_STRIPE_PUBLIC_KEY
-
-const btnTaps = ref(1)
-
-
-const options = {
-  server_url: 'http://localhost:3000/api/ai',
-}
-
-const options1 = {
-  server_url: 'http://localhost:3000/api/ai',
-  mode: 'payment',
-  amount: 1000
-}
-
-
-
-function handleVer(feed: any){
-  console.log(feed);
-  
-}
-
-
+import Test from './examples/Test.vue'
 
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css');
 
-
-
+.docker{
+  padding: 60px;
+}
 .container{
-  max-width: 400px;
-  margin: 0 auto;
+  background-color: rgb(227, 232, 238);
+  max-width: 500px;
+  margin: 10px auto;
+  padding: 30px 20px;
+  border-radius: 10px;
 }
 
-button{
-  display: block;
-  width: 100%;
-  margin: 10px;
-  padding: 10px;
-  cursor: pointer;
+body{
+  background-color: #1f1f1f;
+}
+
+.docker-content{
+  text-align: center;
+  padding: 20px 0;
+  h1, p{
+    color: #fff;
+    max-width: 500px;
+    margin: 20px auto;
+  }
+  h1{
+    line-height: 1;
+  }
+  .button{
+    background-color: #e4f222;
+  }
 }
 
 </style>

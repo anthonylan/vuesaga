@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import {  onMounted, watch } from 'vue'
+import {  onMounted, watch, type PropType } from 'vue'
 import { apiRequest } from '../utils'
 
 const props: any = defineProps({
     pk: String,
     tap: Number,
     options: {
-        type: Object,
-        mode: String,
-        currency: String,
-        amount: Number,
-        r_url: String,
-        server_url: String,
-        appearance: {
-            labels: String,
-            theme: String,
-        }
+        type: Object as PropType<{
+            mode?: string;
+            currency?: string;
+            amount?: number;
+            r_url?: string;
+            server_url?: string;
+            appearance?: {
+                labels?: string;
+                theme?: string;
+            };
+        }>,
+        default: () => ({}),
     }
 })
 
@@ -67,16 +69,15 @@ const validationParams = (clientSecret: string) => {
 
 
 const confirmCard = async () => {  
-    const data  = await apiRequest(props.options.server_url, { options: optionVal }, emit)
-    const clientSecret = data['client_secret'] ?? 'xxx'       
+    const { secret } = await apiRequest(props.options.server_url, { options: optionVal }, emit)
 
     try {
         const data = optionVal.mode == 'setup' ? 
         await stripe.confirmSetup(
-            validationParams(clientSecret)
+            validationParams(secret)
         ) : 
         await stripe.confirmPayment(
-            validationParams(clientSecret)
+            validationParams(secret)
         )
         emit('verify', { chain: 'server intent', error: false, data: data })        
     } catch (error) {
@@ -102,7 +103,7 @@ onMounted(() => {
 
 <template>
 
-  <div class="vuefintegrate-container">
+  <div class="vuefintegrate">
     <div id="payment-element"></div>
   </div>
   
@@ -111,8 +112,8 @@ onMounted(() => {
 
 <style>
 
-.vuefintegrate-container{
-    padding: 10px;
+.vuefintegrate{
+    padding: 5px;
 }
 
 </style>

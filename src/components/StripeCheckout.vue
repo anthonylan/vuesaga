@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, type PropType } from 'vue'
 import { apiRequest } from '../utils'
 
 
@@ -7,11 +7,13 @@ const emit: any = defineEmits(['tap', 'verify'])
 const props = defineProps({
     pk: String,
     options: {
-        type: Object,
-        r_url: String,
-        amount: Number,
-        currency: String,
-        server_url: String
+        type: Object as PropType<{
+            currency?: string;
+            amount?: number;
+            r_url?: string;
+            server_url?: string
+        }>,
+        default: () => ({}),
     }
 })
 
@@ -22,11 +24,11 @@ const options = {
 
 const readyCheckout = () => {
     const stripe = window.Stripe(props.pk)
-    const elements = stripe.elements({ mode: 'payment', ...options })
+    const elements = stripe.elements({
+         mode: 'payment', ...{currency: options.currency, amount: options.amount} 
+    })
 
-    const expressCheckoutElement = elements.create('expressCheckout', {
-        type: 'expressCheckout'
-    });
+    const expressCheckoutElement = elements.create('expressCheckout');
     expressCheckoutElement.mount('#express-checkout-element')
 
     const expressCheckoutDiv: any = document.getElementById('express-checkout-element')
@@ -42,12 +44,11 @@ const readyCheckout = () => {
         const { error } = await elements.submit();
         if(error) return emit('verify', {chain: 'checkout element', error: true, data: error })
 
-        const data  = await apiRequest(options.server_url, { options }, emit)
-        const clientSecret = data['client_secret'] ?? 'xxx'        
+        const { secret }  = await apiRequest(options.server_url, { options }, emit)
 
         try {
             const data = await stripe.confirmPayment({
-                elements, clientSecret, confirmParams: { return_url: options.r_url },
+                elements, secret, confirmParams: { return_url: options.r_url },
                 redirect: "if_required"
             })
             emit('verify', {chain: 'intent confirmation', error: false, data: data })
@@ -71,3 +72,11 @@ onMounted(() => {
         <div id="express-checkout-element"></div>
     </div>
 </template>
+
+<style>
+
+.vuefintegrate{
+    padding: 5px;
+}
+
+</style>

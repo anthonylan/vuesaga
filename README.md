@@ -1,13 +1,37 @@
-## VueFintegrate Component Documentation
+# VueSaga Documentation
+Vue Utility for Efficient Stripe API Integration
 
-The VueFintegrate component is a Vue.js component that provides integration with the Stripe payment gateway. It allows you to create a payment form and handle payment submissions using Stripe.
+Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Props](#props)
+- [Events](#events)
+- [Server](#server)
+- [Examples](#examples)
+
+
+
+
+### Features
+
+- Integration with Stripe Elements: Easily embed Stripe Elements for secure payment input forms.
+- Integration with Stripe Checkout: Streamline the checkout process using Stripe Checkout for a smooth payment experience.
+- Customizable appearance: Customize the appearance of Stripe Elements and Checkout to match your application's design.
+- Simplified API interactions: Handle API requests to create payment intents and confirm payments with ease.
+- Event-driven architecture: Emit events to notify the parent component about the payment status and provide real-time feedback.
+
 
 ### Installation
 
-To install the VueFintegrate component, use the following command:
+You can install the Vue Stripe Integration Library via npm:
+
 
 ```bash
-npm install vuefintegrate
+npm install vuesaga
 ```
 
 Additionally, you need to include the Stripe JavaScript library in your project. Add the following script tag to your index.html file:
@@ -16,103 +40,295 @@ Additionally, you need to include the Stripe JavaScript library in your project.
 <script src="https://js.stripe.com/v3/"></script>
 ```
 
-### Component Usage
 
-To use the VueFintegrate component, follow these steps:
-
-1. Import the necessary components and functions:
-
-```javascript
-import { ref } from 'vue'
-import { StripeElement } from 'vuefintegrate'
-```
-
-2. Obtain your Stripe public key and assign it to the `public_key` variable. You can use an environment variable or any other method to store your public key.
+### Usage
+To use the library in your Vue.js project, follow these steps:
+1. Import the desired components:
 
 ```javascript
-const public_key = 'pk_xxx'
+import { StripeElement, StripeCheckout } from 'vuesaga'
 ```
 
-3. Define a reference variable to track the number of button taps:
+2. Register the components in your Vue component:
 
 ```javascript
-const btnTaps = 1
+components: {
+    StripeElement,
+    StripeCheckout,
+},
 ```
-
-4. Define the options for the Stripe integration. The `server_url` option specifies the URL where you handle the server-side processing of the payment.
+3. Define the required props and options for the components:
 
 ```javascript
-const options = {
-  server_url: 'http://example.com/api/create-intent',
-}
+props: {
+    pk: 'pk_test_xxx',
+    options:{
+      server_url: 'example.com/api/create-setup',
+      amount: 2000 //required for checkout & elements when mode == 'payment'
+    }
+},
 ```
-
-5. (Optional) You can customize the payment options further by including additional options like `mode` (payment or setup) and `amount` (the payment amount).
-
-```javascript
-const options1 = {
-  server_url: 'http://example.com',
-  mode: 'payment',
-  amount: 1000
-}
-```
-
-6. Define a function to handle the verification result. This function will receive the verification result as a parameter and can be used to handle success or error scenarios.
-
-```javascript
-function handler(feed: any){
-  console.log(feed);
-}
-```
-
-7. Include the VueFintegrate component in your template:
-
+4. Implement the components in your template:
 ```html
 <template>
-  <div>
-    <StripeElement :pk="public_key" :tap="btnTaps" :options="options" @verify="handler" />
-  </div>
+    <div>
+        <StripeElement :pk="pk" :options="options" @verify="handler" />
+        <StripeCheckout :pk="pk" :options="options" @verify="handler" />
+    </div>
+</template>
+
+```
+5. Implement the event handler for the verify event emitted by the components:
+
+```javascript
+methods:{
+  handler(feed) {
+    console.log(feed);
+ }
+}
+```
+6. Required for StripeElement ONLY: Trigger the form submission:
+```javascript
+  data: () => ({
+    btnTaps: 1
+  })
+```
+... now update your template:
+```html
+<template>
+    <div>
+        <StripeElement :pk="pk" :tap="btnTaps" :options="options" @verify="handler" />
+        <a-button @click="btnTaps++">Submit</a-button>
+
+        <StripeCheckout :pk="pk" :options="options" @verify="handler" />
+    </div>
 </template>
 ```
 
-8. Use the component in your application as desired. The `:pk` prop should be set to your Stripe public key, the `:tap` prop should be set to the button taps reference variable, the `:options` prop should be set to the options object defined earlier, and the `@verify` event should be bound to the verification handler function.
+### Props
+Vuesaga accepts the following props:
 
-### Component Props
-
-The VueFintegrate component accepts the following props:
-
-- `pk` (String, required): The Stripe public key used for client-side authentication and communication with the Stripe API.
-- `tap` (Number, required): A reference variable that tracks the number of button taps. Submitting the payment form is triggered when this variable changes.
-- `options` (Object, optional): Additional options for customizing the Stripe integration. It can contain the following properties:
+- `pk` (String, required):  The Stripe publishable key.
+- `tap` (Number, required)[Elements ONLY]: A reactive property that triggers the submission of the payment form when its value changes.
+- `options` (Object, required): An object containing the configuration options for Stripe Elements / Checkount. It includes the following properties:
   - `mode` (String, default: 'setup'): The mode of the integration, either 'setup' or 'payment'. This determines whether you are setting up a payment method or processing a payment.
   - `currency` (String, default: 'usd'): The currency to use for the payment.
-  - `amount` (Number, default: 1000): The payment amount in cents. This is only applicable when the `mode` is set to 'payment'.
-  - `r_url`
-
- (String): The return URL after the payment is completed.
-  - `server_url` (String, required): The URL where you handle the server-side processing of the payment.
+  - `amount` (Number, default: 1000): The payment amount in cents. This is only applicable for checkount and when element the `mode` is set to 'payment'.
+  - `r_url` (String): The return URL after the payment is completed.
+  - `server_url` (String, required): The URL where you handle the server-side processing of the payment or setup.
   - `appearance` (Object): An object containing appearance-related options:
     - `labels` (String, default: 'above'): The position of the labels in the payment form.
     - `theme` (String, default: 'flat'): The theme of the payment form.
 
-### Component Events
 
-The VueFintegrate component emits the following event:
+### Events
+- `verify`: An event emitted by the component to notify the parent component about the payment / setup verification status. It provides an object with the following properties:
 
-- `verify`: This event is emitted when the payment submission is verified either by the client or the server. It provides the verification result as an object parameter. The object has the following properties:
-  - `chain` (String): Indicates the stage of verification ('form element' or 'server intent').
-  - `error` (Boolean): Indicates if an error occurred during verification.
-  - `data` (Object): The verification data. This can contain additional information about the verification result or the payment.
+  - `chain` (String): The chain of events or components where the verification occurred.
 
-### Styling
+  - `error` (Boolean): Indicates whether an error occurred or not.
 
-The VueFintegrate component provides a default minimalistic style, but you can customize it further by adding your own CSS rules. The component's container has the class `vuefintegrate-container`, which you can use to target the styling.
+  - `data` (Object): Additional data related to the verification process.
 
-```html
-<style>
-.vuefintegrate-container {
-  padding: 10px;
+
+### Server
+#### `server_url` Prop
+The `options.server_url` prop is an important property used in both the StripeElement and StripeCheckout components. It specifies the server endpoint URL where the library will make API requests to handle payment / setup intents and confirmations with Stripe.
+
+When a payment is submitted, VueSaga sends a request to the specified server_url endpoint to confirm the setup or payment. Your server is expected to provide a client_secret in JSON format as a response. Here's an example of the expected JSON format:
+
+```javascript
+{ 
+  secret: "your_client_secret_value"
 }
-</style>
+```
+Make sure to include the `secret` field with the appropriate value in the JSON response from your server to enable seamless integration with VueSaga.
+
+-----
+SetupIntent and PaymentIntent for various programming languages:
+
+- Setup: https://stripe.com/docs/api/setup_intents/create
+- Payment and checkout: https://stripe.com/docs/api/payment_intents/create
+
+IMPORTANT: Always enable `automatic_payment_methods` in your server code.
+
+-----
+
+#### Data Sent to the Server
+The data sent to the `server_url` endpoint depends on the specific component and mode of operation.
+
+For the StripeElement (mode:payment) component & checkout, when submitting the payment form, the library sends a POST request to the `server_url` with the following JSON payload:
+
+```javascript
+{
+    "currency": "<currency_code>",
+    "amount": <payment_amount>
+}
 ```
 
+Where:
+
+- <currency_code> is the currency code specified in the options prop (or the default if not provided).
+- <payment_amount> is the payment amount specified in the options prop (or the default if not provided).
+
+On the other hand, for the StripeElement with mode: setup, an empty body is sent to the server_url endpoint
+
+#### Server Response
+The server endpoint specified by the `server_url` prop should handle the incoming requests and communicate with Stripe's API to create or retrieve the necessary information.
+
+Upon receiving the request, the server should perform the following steps:
+
+- Interact with Stripe's API to create or retrieve a payment intent, depending on the mode of operation (payment or setup).
+- Retrieve the client_secret from the payment intent created or retrieved from Stripe.
+- Return the client_secret in the server's response.
+
+The server's response should have the following structure:
+
+```javascript
+{
+  "secret": "<client_secret>"
+}
+```
+
+Where <client_secret> is the value obtained from the payment / setup intent.
+
+VueSaga will use this client_secret to confirm the payment intent with Stripe and complete the payment process.
+
+It's important to ensure that your server-side code securely communicates with Stripe's API, validates requests, and handles errors gracefully.
+
+----
+
+Please note that the exact implementation details of the server-side code are beyond the scope of this library's documentation, as it depends on your specific server environment and programming language. Consult Stripe's official documentation and relevant server-side resources for guidance on implementing the server-side integration.
+
+----
+
+### Examples
+Here's an example of how you can implement the server-side code using Express.js:
+
+
+#### Example 1: StripeElement(setup)
+Vue: 
+```javascript
+<script>
+  import { StripeElement } from 'vuesaga'
+
+  export default{
+    components: { StripeElement },
+    data: () => ({
+      public_key: 'pk_test_xxx',
+      tap: 1
+      options: {
+        server_url: '/create-setup-intent',
+      }
+    }),
+    methods:{
+      handlder(feed){
+        console.log(feed) //Do something else with this info
+      }
+    }
+  }
+</script>
+```
+
+```html
+<template>
+  <StripeElement :pk="public_key" :tap="tap" :options="options" @verify="handler"  />
+  <button @click="tap++">Save Card</button>
+</template>
+```
+
+Express.js:
+```javascript
+const express = require('express');
+const app = express();
+const stripe = require('stripe')('YOUR_STRIPE_SECRET_KEY');
+
+app.use(express.json());
+
+//Ref: (https://stripe.com/docs/api/payment_intents/create)
+app.post('/create-setup-intent', async (req, res) => {
+
+    const setupIntent = await stripe.setupIntents.create({
+        automatic_payment_methods: { enabled: true }
+    })
+
+    res.status(200).json({
+        secret: setupIntent['client_secret']
+    })
+})
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+```
+
+
+#### Example 2: StripeElement(payment) and StripeCheckout
+Vue:
+
+```javascript
+<script>
+  import { StripeElement, StripeCheckout } from 'vuesaga'
+
+  export default{
+    components: { 
+      StripeElement, StripeCheckout
+   },
+    data: () => ({
+      public_key: 'pk_test_xxx',
+      tap: 1
+      options: {
+        server_url: '/create-payment-intent',
+        mode: 'payment',
+        amount: 3000
+      }
+    }),
+    methods:{
+      handlder(feed){
+        console.log(feed) //Do something else with this info
+      }
+    }
+  }
+</script>
+```
+
+```html
+<template>
+  <StripeElement :pk="public_key" :tap="tap" :options="options" @verify="handler"  />
+  <button @click="tap++">Pay $30.00</button>
+
+  <br />
+  <StripeCheckout :pk="public_key" :options="options" @verify="handler"  />
+</template>
+```
+
+Express.js:
+```javascript
+const express = require('express');
+const app = express();
+const stripe = require('stripe')('YOUR_STRIPE_SECRET_KEY');
+
+app.use(express.json());
+
+//Ref: (https://stripe.com/docs/api/payment_intents/create)
+app.post('/create-payment-intent', async (req, res) => {
+    const data = req.body
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: data.amount,
+        currency: data.currency,
+        automatic_payment_methods: { enabled: true },
+    })
+
+    res.status(200).json({
+        secret: paymentIntent['client_secret']
+    })
+})
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+```
+
+### Attr
+By abstracting away complex implementation details, VueSaga simplifies the integration process, allowing developers to seamlessly leverage the full functionality of Stripe's payment infrastructure.
