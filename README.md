@@ -1,6 +1,4 @@
-# VueSaga Documentation
-Vue Utility for Efficient Stripe API Integration
-
+# VueSaga
 Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code
 
 ## Table of Contents
@@ -27,7 +25,7 @@ Seamlessly integrate Stripe payments and card handling into your Vue.js applicat
 
 ### Installation
 
-You can install the Vue Stripe Integration Library via npm:
+You can install the VueSaga Library via npm:
 
 
 ```bash
