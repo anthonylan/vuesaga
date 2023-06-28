@@ -65,13 +65,13 @@ components: {
 3. Define the required props and options for the components:
 
 ```javascript
-props: {
-    pk: 'pk_test_xxx',
-    options:{
+  data: () => ({
+     pk: 'pk_test_xxx',
+     options:{
       server_url: 'example.com/api/create-setup',
       amount: 2000 //required for checkout & elements when mode == 'payment'
     }
-},
+  })
 ```
 4. Implement the components in your template:
 ```html
