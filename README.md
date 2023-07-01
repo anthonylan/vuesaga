@@ -1,4 +1,6 @@
-# VueSaga 
+# VueSaga: Stripe + Vue integration
+
+![demo screen](./demo/Screenshot%202023-07-01%20at%206.55.57%20PM.png)
 Seamlessly integrate Stripe payments and card handling into your Vue.js applications with minimal code. 
 
 [![npm version](https://img.shields.io/npm/v/vuesaga.svg?style=flat-square)](https://www.npmjs.org/package/vuesaga)
